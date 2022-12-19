@@ -21,17 +21,16 @@
   type ResourceLoadState = LoadingState | SuccessState | FailState;
 
   function printLoginState(resourceLoadState: ResourceLoadState): void {
-    let result: string;
-    if (resourceLoadState.state === 'loading') {
-      console.log(`👀 ${resourceLoadState.state}...`)
-    }
-
-    if (resourceLoadState.state === 'success') {
-      console.log(`😃 ${resourceLoadState.response.body}`)
-    }
-
-    if (resourceLoadState.state === 'fail') {
-      console.log(`😱 ${resourceLoadState.reason}`)
+    switch(resourceLoadState.state) {
+      case 'loading':
+        console.log(`👀 ${resourceLoadState.state}...`)
+        break;
+      case 'success':
+        console.log(`😃 ${resourceLoadState.response.body}`)
+        break;
+      case 'fail':
+        console.log(`😱 ${resourceLoadState.reason}`)
+        break;
     }
   }
 
