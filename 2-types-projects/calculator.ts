@@ -13,7 +13,7 @@ function calculate(operation: OPERATION, number1: number, number2: number): numb
     case 'remainder':
       return number1 % number2;
     default:
-      return 0;
+      throw new Error('Unknown operation: ' + operation);
   }
 }
 

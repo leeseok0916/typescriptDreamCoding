@@ -31,6 +31,8 @@
       case 'fail':
         console.log(`😱 ${resourceLoadState.reason}`)
         break;
+      default:
+        console.log('new resourceLoadState');
     }
   }
 

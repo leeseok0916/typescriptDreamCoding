@@ -8,10 +8,10 @@ let position: Position = {
   y: 0
 }
 
-type moveType = 'up' | 'down' | 'left' | 'right';
+type Direction = 'up' | 'down' | 'left' | 'right';
 
-function move(moveType: moveType): void {
-  switch (moveType) {
+function move(direction: Direction): void {
+  switch (direction) {
     case 'up':
       position.y = position.y +1 ;
       break;
@@ -24,6 +24,8 @@ function move(moveType: moveType): void {
     case 'right':
       position.x = position.x +1 ;
       break; 
+    default:
+      throw new Error(`Unknown direction: ${direction}`);
   }
 }
 
