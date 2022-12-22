@@ -85,3 +85,12 @@ function getValue<T, K extends keyof T>(obj: T, key: K) : T[K] {
 
 console.log(getValue(obj1, 'name'));
 console.log(getValue(obj2, 'animal'));
+
+
+function AAAA1(para: string | number | boolean):  string | number | boolean {
+  return para;
+}
+
+function AAAA2<T>(para:  T):  T {
+  return para;
+}
