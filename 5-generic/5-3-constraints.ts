@@ -78,7 +78,7 @@ const obj2 = {
 }
 
 // K extends keyof T>: T 제네릭(object)의 key들 중 하나를 사용한다라는 뜻
-// O[K] : T 제네릭(object)의 key에 해당하는 값을 리턴 === obj1['name']
+// T[K] : T 제네릭(object)의 key에 해당하는 값을 리턴 === obj1['name']
 function getValue<T, K extends keyof T>(obj: T, key: K) : T[K] {
   return obj[key];
 }
