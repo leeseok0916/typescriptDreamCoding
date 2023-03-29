@@ -30,65 +30,118 @@
     }
 
     makeCoffee(shots: number): CoffeeCup {
+      this.grindBeans(shots);
+      this.preheat();
+      return this.exract(shots);
+    }
+
+    private grindBeans(shots: number) {
+      console.log(`grinding bean for ${shots}`);
       if (this.coffeeBeans < shots * CoffeMachine.BEANS_GRAM_PER_SHOT) {
         throw new Error('Not enough coffee beans!');
       }
-
       this.coffeeBeans -= shots * CoffeMachine.BEANS_GRAM_PER_SHOT;
+    }
+
+    private preheat() {
+      console.log('heating up....🔥')
+    }
+
+    private exract(shots: number): CoffeeCup {
+      console.log(`Pulling ${shots} shots....`);
       return {
         shots,
-        hasMilk: false,
       }
     }
 
     clean(): void { }
   }
 
-  class CaffeLatteCoffeMachine extends CoffeMachine {
-    // 자식 클래스에서 생성자를 만들 때는 반드시!!! 부모 클래스의 생성자를 호출해야한다
-    constructor(coffeeBeansAmount: number, serialNumber: string) {
-      super(coffeeBeansAmount);
+  interface MilkFrother {
+    makeMilk(cup: CoffeeCup): CoffeeCup
+  }
+
+  interface SugarProvider {
+    addSugar(cup: CoffeeCup): CoffeeCup
+  }
+
+  // 싸구려 우유 거품기
+  class CheapMilkSteamer implements MilkFrother {
+    private steamMilk() {
+      console.log('우유 데우기');
     }
-    private steamMilk() :void {
-      console.log('Steaming some milk... 🥛')
-    }
-    makeCoffee(shots: number): CoffeeCup {
-      // 자식에서 부모의 함수를 이용하고 싶다면
-      const coffee = super.makeCoffee(shots);
+
+    makeMilk(cup: CoffeeCup): CoffeeCup {
       this.steamMilk();
       return {
-        ...coffee,
+        ...cup,
         hasMilk: true,
       }
     }
   }
 
-  class SweetCoffeeMaker extends CoffeMachine {
-    constructor(coffeeBeansAmount: number) {
-      super(coffeeBeansAmount);
+  // 설탕 제조기
+  class CandySugarMixer implements SugarProvider{
+    private getSugar() {
+      console.log('설탕 가져오기 🍬');
+      return true;
     }
 
-    makeCoffee(shots: number): CoffeeCup {
-      // 자식에서 부모의 함수를 이용하고 싶다면
-      const coffee = super.makeCoffee(shots);
+    addSugar(cup: CoffeeCup): CoffeeCup {
+      const sugar = this.getSugar();
       return {
-        ...coffee,
-        hasSugar: true,
+        ...cup,
+        hasSugar: sugar,
       }
     }
   }
 
-  const machines: CoffeMaker[] = [
-    new CoffeMachine(22),
-    new CaffeLatteCoffeMachine(22, '1'),
-    new SweetCoffeeMaker(10),
-    new CoffeMachine(22),
-    new CaffeLatteCoffeMachine(22, '2'),
-    new SweetCoffeeMaker(10),
-  ]
+  class CaffeLatteCoffeMachine extends CoffeMachine {
+    constructor(coffeeBeansAmount: number, serialNumber: string, private milkFother: CheapMilkSteamer) {
+      super(coffeeBeansAmount);
+    }
+    
+    makeCoffee(shots: number): CoffeeCup {
+      // 자식에서 부모의 함수를 이용하고 싶다면
+      const coffee = super.makeCoffee(shots);
+      return this.milkFother.makeMilk(coffee);
+    }
+  }
 
-  machines.forEach((machine) => {
-    console.log('--------------------');
-    machine.makeCoffee(1); 
-  });
+  class SweetCoffeeMaker extends CoffeMachine {
+    constructor(beans: number, private sugar: CandySugarMixer) {
+      super(beans);
+    }
+    
+    makeCoffee(shots: number): CoffeeCup {
+      // 자식에서 부모의 함수를 이용하고 싶다면
+      const coffee = super.makeCoffee(shots);
+      return this.sugar.addSugar(coffee);
+    }
+  }
+
+  class SweetCaffeLatteMachine extends CoffeMachine {
+    constructor(beans: number, private sugar: CandySugarMixer, private milkFother: CheapMilkSteamer) {
+      super(beans);
+    }
+
+    makeCoffee(shots: number): CoffeeCup {
+      const coffee = super.makeCoffee(shots);
+      const sweetCoffee = this.sugar.addSugar(coffee);
+      return this.milkFother.makeMilk(sweetCoffee);
+    }
+  }
+
+
+  // const cheapMilkMaker = new CheapMilkSteamer();
+  // const candySuger = new CandySugarMixer();
+  // const sweetMachine = new SweetCoffeeMaker(12, candySuger);
+  // const latteMachine = new CaffeLatteCoffeMachine(12, '1', cheapMilkMaker);
+  // const sweetLatteMachine = new SweetCaffeLatteMachine(12, candySuger, cheapMilkMaker);
+  // 재사용성이 떨어짐
+  // 다른 설탕, 다른 우유를 사용하는 기계를 만들고 싶다면 그 기계를 새롭게 만들어야한다.
+  // 그 말은 CoffeMachine 클래스를 상속받는 자식 클래스를 만들어야 한다.
+  // 이렇게 하면 자식 클래스가 끝없이 늘어나는 수가 있다
+
+
 }
