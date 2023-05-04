@@ -1,5 +1,6 @@
 {
   "editor.tokenColorCustomizations": {
   "comments": "#ffc2c2"
-}
+},
+"editor.formatOnSave": true
 }

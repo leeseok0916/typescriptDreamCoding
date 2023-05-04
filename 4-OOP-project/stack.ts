@@ -1,4 +1,5 @@
-interface Stack {
+{
+  interface Stack {
   readonly size: number;
   push(value: string): void;
   pop(): string;
@@ -19,25 +20,21 @@ class StackNodes implements Stack {
   private head?: LinkedNode;
 
   push(value: string): void {
+    const newNode: LinkedNode = { val: value, next: this.head };
+    this.head = newNode;
     this._size++;
-    if (!this.head) {
-      const newNode: LinkedNode = { val: value };
-      this.head = newNode;
-    } else {
-      const newNode: LinkedNode = { val: value, next: this.head };
-      this.head = newNode;
-    }
   }
 
   pop(): string {
-    this._size--;
-    if (this.head) {
-      const node = this.head;
-      this.head = node.next;
-      return node.val;
-    } else {
+    if (!this.head) {
       return '';
+      
     }
+
+    const node = this.head;
+    this.head = node.next;
+    this._size--;
+    return node.val;
   }
 }
 
@@ -49,3 +46,4 @@ console.log(stack.pop());
 console.log(stack.pop());
 console.log(stack.pop());
 console.log(stack.pop());
+}
